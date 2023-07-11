@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title><![CDATA[用户行为分析之前端]]></title>
+    <url>%2F2017%2F12%2F12%2F%E7%94%A8%E6%88%B7%E8%A1%8C%E4%B8%BA%E5%88%86%E6%9E%90%E4%B9%8B%E5%89%8D%E7%AB%AF%2F</url>
+    <content type="text"><![CDATA[这是一个测试文档]]></content>
+      <categories>
+        <category>个人博客</category>
+      </categories>
+      <tags>
+        <tag>用户行为分析</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[web前后端数据通信]]></title>
+    <url>%2F2017%2F12%2F04%2Fweb%E5%89%8D%E5%90%8E%E7%AB%AF%E6%95%B0%E6%8D%AE%E9%80%9A%E4%BF%A1%2F</url>
+    <content type="text"><![CDATA[这几年发展迅猛的Web端技术，在数据通信这块却不能说上快速，原因受制于传统的浏览器设计。目前主流的web通讯技术大致有4种：传统的Ajax短轮询，Comet技术，WebSocket技术，SSE(Server-send Events)。这里将分别简要介绍这4种技术的原理，并指出各自的异同点，优缺点。 Ajax短轮询 Ajax是Asynchronous JavaScript and XML的简称，由Jesse James Garrett 首先提出。这种技术开创性的允许浏览器脚本（js）发送http请求，Outlook Web Access小组于98年使用，并很快成为IE4.0的一部分，但是这个技术一直很小众，直到2005年初，google在他的goole groups、gmail等交互式应用中广泛使用此种技术，才使得Ajax迅速被大家所接受。 Ajax的出现使客户端与服务器端传输的数据少了很多，也快了很多，满足了以丰富用户体验为特点的web2.0时代发展初期的需要，但是也慢慢暴露的它的弊端。 比如无法满足即时通讯等富交互式应用的实时更新数据的要求。这种浏览器端的通信技术还是基于http协议，http要求请求/响应的模式也是无法改变的，除非http协议本身有所改变。 Comet：一种hack技术 以即时通信为代表的web应用程序对数据的low latency（低延时）要求,传统的基于轮询的方式无法满足，而且也会带来不好的用于体验。于是一种基于http长连接的‘服务器推’技术便被hack出来。这种技术被命名未Comet,这个术语由Dojo Toolkit 的项目主管Alex Russell在博文Comet: Low Latency Data for the Browser首次提出，并沿用下来。 其实服务器推很早就存在了，在经典的client/server模型中就广泛应用，只是浏览器太懒了。并没有对这种技术提供很好的支持。但是Ajax的出现，使这种技术在浏览器上实现成为可能，google的gmail和gtalk的整合首先使用了这种技术。随着一些关键问题的解决（IE长连接中加载显示的问题），很快这种技术得到了认同。目前已有很多成熟的开源Comet框架。 以下时典型的Ajax和Comet数据传输方式的对比，区别简单明了。典型的Ajax通信方式也是http协议的经典使用方式，要想取得数据，必须首先发送请求。在low latency要求较高的web应用中，只能增加服务器请求的频率。Comet则不同，客户端与服务器端保持一个长连接，只有客户端需要的数据更新时，服务器才主动将数据推送给客户端。Comet的实现主要有两种方式： 基于Ajax的长轮询（long-polling）方式 浏览器发出XMLHttpRequest 请求，服务器端接受到请求后，会阻塞请求直到有数据或超时才返回，浏览器JS在处理请求信息（超时或有效数据）后再次发送请求，重新建立连接。在此期间服务器端可能已经有新的数据到达，服务器会选择把数据保存，直到重新建立连接，浏览器会把所有数据一次性取回。 基于Iframe及htmlfile的流（http streaming）方式 Iframe时html标记，这个标记的src属性会保持对指定服务器的长连接请求，服务器端则可以不停的返回数据，相对于第一种方式，这种方式跟传统的服务器推更接近。 在第一种方式中，浏览器在收到数据后会直接调用JS回调函数，但是这种方式该如何响应数据呢？可以通过在返回数据中嵌入JS脚本的方式，如&quot;&lt;script type=&#39;text/javascript&#39;&gt;some_func(&#39;data from server&#39;)&lt;/script&gt;&quot;，服务器端将返回的数据作为回调函数的参数，浏览器在收到数据后就会执行这段JS脚本。 但是这种方式有一个明显的不足之处：IE、Morzilla Firefox 下端的进度栏都会显示加载没有完成，而且 IE 上方的图标会不停的转动，表示加载正在进行。Google 的天才们使用一个称为“htmlfile”的 ActiveX 解决了在 IE 中的加载显示问题，并将这种方法应用到了 gmail+gtalk 产品中。 WebSocket 如果说Ajax的出现时互联网发展的必然，那么Comet技术的出现则更多透露出一种无奈，仅仅作为一种hack技术，因为没有更好的解决方案。Comet解决的问题应该由谁解决才是合理的。浏览器，html标准？本质上讲，这涉及到数据传输方式，http协议首当其冲，时候改变一下这个协议懒惰的请求/响应模式了。 W3C给出了答案，在新一代的html标准html5中提供了一种浏览器和服务器之间进行全双工通讯的网络技术websocket。从websocket草案得知，这是一种全新，独立的协议，基于TCP协议，与http协议兼容，却不融入http协议，仅仅作为html5的一部分。于是乎脚本又被赋予了另一种能力：发起websocket请求。这种方式我们很熟悉，因为Ajax就是这么做的，所不同的是，Ajax发起的是http请求而已。 与http协议不同的是，websocket在建立连接之前有一个Handshake（握手 Opending Handshake）过程，在关闭连接前也有一个Handshake(Closing HandShake)过程，建立连接后，双方即可相互通信。详细认识wensocket访问之前的博客websocket说明SSE(server-send event) SSE，服务端推送事件是一种允许服务端向客户端推送新数据的HTML5技术。与由客户端每隔几秒从服务端轮询拉取新数据相比，这是一种更优的解决方案。 与WebSocket相比，它也能从服务端向客户端推送数据。那如何决定你是用SSE还是WebSocket呢。概括来说，websocket能做的，SSE也能做，反之亦然，但是完成某些任务方面，它们各有千秋。 WebSocket和SSE的浏览器支持率差不多，大多数主流桌面浏览器两者都支持。在Android4.3以及更早的版本中，系统默认浏览器两者都不支持，Firefox和Chrome则完全支持；Android4.4中，系统默认浏览器两者都支持；Safari5.0开始支持SSE，但是直到6.0才开始支持WebSocket(6.0之前的Safari所实现的WebSocket协议存在安全问题，所以一些主流浏览器已经禁用了基于这个协议的实现)。 与WebSocket相比，SSE有一些显著的优势。个人认为它最大的优势就是便利：不需要添加任何新组件，用任何你习惯的后端语言和框架就能继续使用。你不用为新建虚拟机，弄一个新的IP或新的端口号而劳神，就像在现有网站中新增一个页面那样简单。我喜欢把这称为既存基础设施优势。SSE的第二个优势是服务端的简洁。相对而言，WebSocket则很复杂，不借助辅助类库基本搞不定。因为SSE能在现有的HTTP/HTTPS协议上运作，所以它能直接运行于现有的代理服务器和认证技术。而对WebSocket而言，代理服务器需要做一些开发（或其他工作）才能支持，在写这本书时，很多服务器还没有（虽然这种状况会改善）。SSE还有一个优势：它是一种文本协议，脚本调试非常容易。事实上，在本书中，我们会在开发和测试时用curl，甚至直接在命令行中运行后端脚本。 不过，这就引出了WebSocket相较SSE的一个潜在优势：WebSocket是二进制协议，而SSE是文本协议（通常使用UTF-8编码）。当然，我们可以通过SSE连接传输二进制数据：在SSE中，只有两个具有特殊意义的字符，它们是CR和LF，而对它们进行转码并不难。但用SSE传输二进制数据时数据会变大，如果需要从服务端到客户端传输大量的二进制数据，最好还是用WebSocket。 WebSocket相较SSE最大的优势在于它是双向交流的，这意味向服务端发送数据就像从服务端接收数据一样简单。用SSE时，一般通过一个独立的Ajax请求从客户端向服务端传送数据。相对于WebSocket，这样使用Ajax会增加开销，但也就多一点点而已。如此一来，问题就变成了“什么时候需要关心这个差异？”如果需要以1次/秒或者更快的频率向服务端传输数据，那应该用WebSocket。0.2次/秒到1次/秒的频率是一个灰色地带，用WebSocket和用SSE差别不大；但如果你期望重负载，那就有必要确定基准点。频率低于0.2次/秒左右时，两者差别不大。 从服务端向客户端传输数据的性能如何？如果是文本数据而非二进制数据（如前文所提到的），SSE和WebSocket没什么区别。它们都用TCP/IP套接字，都是轻量级协议。延迟、带宽、服务器负载等都没有区别，除非……呃？除非什么？当你在享用SSE的既存基础设施优势，并在客户端和服务端脚本之间设了一个网络服务器，区别就显现出来了。一个SSE连接不仅使用一个套接字，还会占用一个Apache线程或进程，如果用PHP，它会为这个连接专门创建一个PHP新实例。Apache和PHP会使用大量的内存，这会限制服务器所能支持的并行连接数。所以，要做到用SSE在数据传输性能上和WebSocket完全一样，需要写一个自己的后端服务器，当然，那些在任何情况下都会用自己的服务器并使用Node.js的人，会觉得这有什么稀奇的。 说一下WebSocket在旧版本浏览器上的兼容。当前，大约超过2/3的浏览器支持这些新技术，移动端浏览器的支持率会低一些。依惯例，每当需要双向套接字时，就会用到Flash，并且WebSocket的向后兼容通常是用Flash来做，这已经相当复杂了，如果浏览器上没有Flash，情况更糟。概括来说，WebSocket难兼容，SSE易兼容。 [部分转自博客http://blog.csdn.net/qq_20353887/article/details/52276994?locationNum=7]]]></content>
+      <categories>
+        <category>技术博客</category>
+      </categories>
+      <tags>
+        <tag>ajax, comet, SSE, websocket</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[websocket说明]]></title>
+    <url>%2F2017%2F12%2F01%2Fwebsocket%E8%AF%B4%E6%98%8E%2F</url>
+    <content type="text"><![CDATA[websocket使用说明 在一般的网络请求中，如HTTP协议，只能有前端发出请求后，后端根据协议的握手验证后，才能返回数据到前端。这样的数据传输方式，在有大量的HTTP请求时，会导致阻塞，例如在HTTP 1.1协议中，chrome就只能同时并发8条请求 。这个问题在HTTP 2.0中已解决 websocket是HTML5中一个可以在TCP连接上进行全双工通讯的协议。在WebSocket API中，只需要进行一个握手的操作后，浏览器和服务器之间就生成了一个专属的快速通道，两者之间可以互传数据。 WebSocket对象通过send()方法来向服务器发送数据，并通过onmessage事件来接受服务器返回的数据。 一般通过下面new WebSocket()的方式创建WebSocket对象： var Socket = new WebSocket( url, [protocol] ); 其中可以传两个参数，url是必传的参数，代表服务器的指定地址，protocol是可选参数，表示可接受的协议名。 WebSocket对象拥有的属性如下： Socket.readyState : 拥有4中连接状态，0-表示连接尚未建立；1-表示连接已建立，可以进行通信；2-表示连接正在关闭；3-表示连接已经关闭或者连接不能打开。 Socket.bufferedAmount : 只读属性bufferedAmount已被send()放入正在队列中等待传输，但是还没有发出UTF-8文本字节数。 WebSocket对象的事件如下： open: 事件处理程序-Socket.onopen,在连接时触发； message: 事件处理程序-Socket.onmessage,客户端接受服务器数据时触发； error: 事件处理程序-Socket.onerror,通信发生错误时触发 close: 事件处理程序-Socket.onclose,连接关闭时触发 WebSocket方法如下： WebSocket.send():使用连接发送数据； WebSocket.close():关闭连接； 为了建立一个WebSocket连接，客户端浏览器首先要向服务器发起一个HTTP请求，这个请求和通常的HTTP请求不同，包含了一些附加头信息，其中附加头信息Upgrade:WebSocket表明这是一个申请协议升级的HTTP请求，服务器端解析这些附加的头信息然后产生应答信息返回给客户端，客户端和服务器之间的WebSocket连接就建立起来了，双方可以互相传数据，并且这个连接持续到知道客户端或服务器的某一方主动关闭连接。]]></content>
+      <categories>
+        <category>技术博客</category>
+      </categories>
+      <tags>
+        <tag>传输协议</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[DOM级别回顾]]></title>
+    <url>%2F2017%2F11%2F22%2FDOM%E7%BA%A7%E5%88%AB%E5%9B%9E%E9%A1%BE%2F</url>
+    <content type="text"><![CDATA[DOM一级 DOM一级由两部分组成，一个是包含DOM Core模块，另一个是DOM HTML。其中DOM核心规定的是如何映射基于XML的文档结构，以便简化对文档中任意部分的访问和操作。DOM HTML模块则在DOM核心的基础上加以扩展，添加了针对HTML的对象和方法。 DOM二级 DOM二级在DOM一级的基础上扩充了以下模块，实现了众多新类型和新接口： DOM视图 DOM Views:定义了跟踪不同文档的接口; DOM事件 DOM Events:定义了事件和事件处理的接口; DOM样式 DOM Style:定义了基于CSS为元素应用样式的接口; DOM遍历和范围 DOM Traversal and Range:定义了遍历和操作文档树的接口; DOM三级 DOM三级进一步扩展了DOM，引入以统一方式加载和保存文档的方法——在DOM加载和保存 DOM Load and Save模块中定义；新增了验证文档的方法——在DOM验证 DOM Validation模块中定义。DOM三级也对DOM Core 进行了扩展，开始支持XML1.0规范，涉及XML Infoset,XPath和XML Base。DOM 0级只是DOM历史上的一个参照点，实际上是不存在的，具体的来说的IE4.0和NN4.0早起的DHTML。]]></content>
+      <categories>
+        <category>技术博客</category>
+      </categories>
+      <tags>
+        <tag>JavaScript</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[利用Hexo+Github搭建个人博客]]></title>
+    <url>%2F2017%2F11%2F20%2F%E5%88%A9%E7%94%A8Hexo-Github%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%2F</url>
+    <content type="text"><![CDATA[利用Hexo+Github搭建个人博客 在这个百家争鸣的开放时代下，每个人都在各自的领域发光发热，作为一个每天早起晚归的板砖工，有一个记录自己板砖历程的记事本 技术博客 也是进入高级包工头的必备条件。所以在这里进行一下回顾一下博客搭建的过程。 本次搭建博客需要以下各类资源：一个github账户，还有~好心情!!! 下面进行搭建过程： 1.安装本地环境 nodeJS 在官网下载nodeJS对应的安装包后，点击按装包以管理员身份运行无脑下一步即可，安装完成后使用cmd命令打开控制台，输入node -v查看是否正确安装node服务，输入npm -v，查看是否已正确安装npm包管理器。本人成功截图如下：本人安装版本较早，现版本号可能会有所不同，但是没有影响。若出现其他情况，请重新安装nodeJS,或查阅相关资料进行处理。2.安装Hexo 和Git 运行npm install hexo -g,在全局模式下安装hexo模块（默认最新版本），安装成功后运行hexo，cli中回下hexo相关指令,如下,更多hexo相关信息请访问Hexo API。我们运行hexo init &lt;your blog&#39;s name&gt;初始化一个Hexo框架的简易博客，这样一个简易博客就搭建完成了。接下来进入博客文件夹，运行hexo s，框架部署成功后，如下：,在本地浏览器中输入http://localhost:4000即可访问到本地部署的博客。 然后登录Git官网，下载Git安装包，进行安装。3.将Hexo博客发布到github上 上面成功后，我们登录github，并创建一个仓库,仓库名必须未your_name.github.io格式。这个github page的固定写法。 建立完成后，拷贝仓库的连接,打开本地博客文件目录，编辑博客配置文件_config.yml,,将配置文件的deploy属性改为如下，注意:后面有一个空格。完成后，我们关联了github,但是还的需要hexo中相应的模块将代码发布到github上，所以接着运行npm install hexo-deployer-git --save，安装完成后。设置连接github的账户，邮箱。。接下来运行hexo d -g，也可以先运行hexo g，再运行hexo d。该命令含义是先生成静态文件，再发布到github上。在发布过程中，github会验证ssh密码，如果已经设置改密码，则会自动跳过。设置连接github SHH教程 发布成功后,即可访问该web站。4.修改Hexo主题 Hexo最大的优势莫过于拥有丰富的主题风格，以及强大的社区论坛。在主题这块，个人比较倾向于Next主题风格，还有其他很多好看的主题。 这里我们进行一下主题的修改设置： 1. 确定主题，运行npm install --save &lt;主题名称&gt;; 2. 修改博客配置文件_config.yml中的theme属性，设置为主题名称; 3. 运行hexo d -g，查看线上页面;5.Hexo相关常用命令 1. 新建分类，hexo new page &#39;名称&#39;; 2. 新建博客，hexo new &#39;名称&#39;; 更多命令请学习hexo官方文档!]]></content>
+      <categories>
+        <category>技术博客</category>
+      </categories>
+      <tags>
+        <tag>Hexo</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[拦截输入属性]]></title>
+    <url>%2F2017%2F09%2F08%2Fangular2%E6%8B%A6%E6%88%AA%E8%BE%93%E5%85%A5%E5%B1%9E%E6%80%A7%2F</url>
+    <content type="text"><![CDATA[拦截输入属性父组件向子组件传递数据，是通过在父组件的属性绑定将数据流向子组件的。子组件可以拦截输入属性的数据并进行相应的处理。有两种方式可以拦截，一是setter拦截属性，而是ngOnChanges监听数据变化 setter拦截属性 getter和setter通常配套使用，用来对属性进行相关约束。 @Component({ selector:&apos;list-item&apos;, template:` &lt;div&gt; &lt;label class = &quot;contact-name&quot; &gt;{{contactObj.name}}&lt;/label&gt; &lt;/div&gt; ` }) export class ListComponent implements OnInit{ _contact:object={}; @Input() set contactObj(contact:object){ this._contact.name=(contact.name &amp;&amp; contact.name.trim() || &apos;no name set&apos;); } get contactObj(){ return this._contact} } ngOnChanges监听数据变化 ngOnChanges用于及时响应Angular在属性绑定中发生的数据变化，该方法接受一个对象参数，包含当前值和变化前的值。在ngOnInit之前，或者当数据绑定的输入属性的值发生变化时会触发。ngOnChanges是组件的生命周期钩子之一。 SimpleChanges类，是angualer的一个基础类，用于处理数据的前后变化，其中包含两个重要的成员变量，分别是previousValue和currentValue,previousValue是获取变化前的数据，而currentValue是获取变化后的数据。 ngOnChanges(changes:{[proKey:string]:SimpleChanges}){ let log:string=[]; for(let proName in changes){ let changeProp=changes[propName], from=JSON.stringify(changeProp.previousValue), to=JSON.stringify(changeProp.currentValue); log.push(`${propName} changed from ${from} to ${to}`) } }]]></content>
+      <categories>
+        <category>前端框架</category>
+      </categories>
+      <tags>
+        <tag>Angular2.0</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[如何在github page博客上绑定域名]]></title>
+    <url>%2F2017%2F09%2F08%2F%E5%A6%82%E4%BD%95%E5%9C%A8github-page%E5%8D%9A%E5%AE%A2%E4%B8%8A%E7%BB%91%E5%AE%9A%E5%9F%9F%E5%90%8D%2F</url>
+    <content type="text"><![CDATA[如何在github page博客上绑定域名 由于国内访问github速度较慢，搭建在github.io上的博客也不例外。当我们通过国内域名解析后访问github.io，速度相对来说还是可以接受的。 首先购买一个域名 在域名解析菜单下，绑定两个解析方法 a===&gt;github.io 解析的ip地址 CNAME===》yourname.github.io io地址 在本地博客文件中source文件夹下面新建一个CNAME文件，没有后缀名。之后发布到github上。]]></content>
+      <categories>
+        <category>技术博客</category>
+      </categories>
+      <tags>
+        <tag>Hexo</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[jQuery性能优化]]></title>
+    <url>%2F2017%2F09%2F07%2FjQuery%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%2F</url>
+    <content type="text"><![CDATA[jQuery性能优化 将常用的方法封装成jQuery插件]]></content>
+      <categories>
+        <category>性能优化</category>
+      </categories>
+      <tags>
+        <tag>Jquery</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[angular2学习笔记]]></title>
+    <url>%2F2017%2F07%2F27%2Fangular2%E7%AC%94%E8%AE%B0%2F</url>
+    <content type="text"><![CDATA[angular2学习笔记 1.Observable对象与Promise对象的区别2.angular2中，组件中调用服务提供的请求方法，默认是不会发出实际请求的，因为RxJS中的Observable实现的是冷模式，只有当该对象的方法被组件实例订阅–subscribe()后，才能发出请求。订阅后的Observable对象返回的是一个Subsciption实例3.路由跳转，代码跳转Router.navigateByUrl()和Router.navitate()的底层工作机制基本一致，都是通过Router.shceduleNavtgation()方法来实现跳转。不同的地方在于两个方法指定跳转的目标配置项的方式。Router.navigateByUrl()方法通过一个URL字符串或URLTree实例来指定。Router.navigate()方法与RouterLink类似，通过链接参数数组来指定（通过链接参数数组生成URLTree()实例）。除了这两个方法外，还支持extras参数定义跳转的具体行为]]></content>
+      <categories>
+        <category>前端框架</category>
+      </categories>
+      <tags>
+        <tag>Angular2.0</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[JS中的Function类型]]></title>
+    <url>%2F2016%2F01%2F19%2FJS%E4%B8%AD%E7%9A%84Function%E7%B1%BB%E5%9E%8B%2F</url>
+    <content type="text"><![CDATA[JS中每个函数都是Function类型的实例，而且都与其他引用类型一样具有属性和方法。并且函数都是对象，因此函数名实际上也是一个指向函数对象的指针，不会与某个函数绑定。函数名实际上也是变量，故改变函数名指向的函数体，则下次调用函数名时，该函数也发生了实质性的改变。函数声明 函数通常有三种声明方式：123456789101112// 普通函数声明function func()&#123; return &apos;i am function&apos;;&#125;// 函数表达式式函数声明var func1=function()&#123; return &apos;hello&apos;;&#125;//新建函数对象实例 不推荐var func2=new Function(&apos;num1&apos;,&apos;num2&apos;,&apos;return num1+num2&apos;); 不推荐最后一种方式去声明函数，这种语法会导致解析两次代码（第一次是解析常规ECMAScript代码，第二次是解析传入构造函数中的字符串）从而影响性能。不过这种语法对于理解‘函数就是对象，函数名是指针’的概念确很直观。JS中函数没有重载的概念函数声明与函数表达式 解析器在向执行环境中加载数据时，对函数声明和函数表达式并非一视同仁。解析器会率先读取函数声明，并使其在执行任何代码之前可用（函数声明提升）；至于函数表达式，则必须等到解析器执行到它所在代码行，才会真正被解释执行。1234567891011/// 可以正常执行，函数sum被提升到源代码顶部，故在执行alert时，不会报错alert(sum(10,10));function sum(num1,num2)&#123; return num1+num2;&#125;// 报错‘unexpected identifier’(意外标识符)错误，直接停止运行alert(func(10,10));var func=function(num1,num2)&#123; return num1+num2;&#125; 除了什么时候可以通过变量访问函数这一点区别之外，函数声明与函数表达式的语法其实是等价的。函数的内部属性 函数内部有两个特殊对象：arguments和this。其中，arguments是一个类数组对象，包含着传入函数中的所有参数。虽然arguments的主要用途时保存函数参数，但是这个对象还有一个callee属性，该属性是一个指针，指向拥有这个arguments对象的函数。如下可以实现一个非常经典的阶乘函数：1234567function factorial(num)&#123; if(num&lt;=1)&#123; return 1 &#125;else&#123; return num*arguments.callee(num01) &#125;&#125; this引用的是函数据以执行的环境对象————或者也可以说时this值（当在网页的全局作用域中调用函数时，this对象引用的就是window）。ES5中也规定了另一个函数对象的属性：caller。这个属性中保存着调用当前函数的函数的引用，如果是在全局作用域中调用当前函数，它的值为null。12345678// 这里执行outer()后，会弹出outer的源码。因为outer调用了inner，而inner函数alert的是调用该函数的函数的引用，即为outer。function outer()&#123; inner();&#125;function inner()&#123; alert(inner.caller);&#125;outer(); 上面情况实际上也可以这样去写arguments.callee.caller它等同于inner.caller。严格模式下访问arguments.callee会导致报错。ES5中还定义了arguments.caller属性，但在严格模式下访问它也会导致报错，而在非严格模式下这个属性始终为undefined。定义这个属性是为了分清arguments.caller和函数的caller属性。以上变化都是为了加强这门语言的安全性，这样第三方代码就不能在相同的环境了窥视其他代码了。严格模式还有一个限制：不能为函数的caller属性赋值，否则会导致错误。函数属性和方法 ES中的函数时对象，所以函数也有属性和方法。每个函数都包含两个属性：length和prototype。其中length属性表示函数希望接收的命名参数个数。而对于ECMAScript中的引用类型而言，prototype是保存他们所有实例方法的真正所在，换句话说函数对象的方法都是保存在prototype名下，只不过时通过各自对象的实例访问罢了。prototype属性是不可枚举的，所以for-in无法发现 每个函数都包含两个非继承而来的方法：apply()和call()。这两个方法的用途都是在特定作用域中调用函数，实际上等于设置函数体内this对象的值。 1.apply()函数：接受两个参数：一个是在其中运行函数的作用域，另一个是参数数组。第二个参数可以时是rray的实例，也可以是arguments对象。1234567891011function sum(num1,num2)&#123; return num1+num2;&#125;// 传入arugments对象，该值为传入callSum1的参数组function callSum1(num1,num2)&#123; return sum.apply(this,arguments);&#125;// 传入数组，参数数组function callSum2(num1,num2)&#123; return sum.apply(this,[num1,num2]);&#125; 上面两个函数输出值完全相同。 2.call()函数：与apply方法相同，区别仅在于接收参数的方式不同。对于call函数而言，第一个参数是this值没有变化，变化的是其余参数都直接传递给函数换句话说，在使用call()方法时，传递给函数的参数必须逐个列举出来。3.bind()函数：在ES5中添加了一个bind方法，这个方法会创建一个函数的实例，其this值会被绑定到传给bind()函数的值。]]></content>
+      <categories>
+        <category>个人博客</category>
+      </categories>
+      <tags>
+        <tag>JavaScript</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[JS中的Array类型]]></title>
+    <url>%2F2016%2F01%2F18%2FJS%E4%B8%AD%E7%9A%84Array%E7%B1%BB%E5%9E%8B%2F</url>
+    <content type="text"><![CDATA[除了Object之外，在ECMAScript中最常用的就是Array类型。这种Array类型相比其他语言不同的是，数组中的每一项都可以保存任何类型的数据，比如第一项保存数值，第二项保存字符串，第三项保存对象等等。而且数组的长度大小是可以动态调整的，随着数据项的增加自动增长。 创建数组的基本方式有两种，一是使用Array构造函数，如下：var test = new Array();其中Array可以传递数据项的值，也可以传递数组长度。 二是使用数组字面量的方式，这是推荐创建数组的方式，从js性能优化的角度上来将，对象字面量创建数组不用调用Array的构造函数，降低内存消耗。数组字面量由一对包含数组项的方括号表示，多个数组项之间用逗号隔开，如下：var test = [1,2];。如果这样创建数组var test = [, , ,]则字面量会根据逗号创建3个或者4个数据项的数组，不建议这样做。1.检测数组 value instanceof Array可以判断value是否是Array类型。但是instanceof操作符的问题在于，它假定只有一个全局执行环境。如果网页中包含多个框架，那实际上就存在两个以上不同的全局执行环境，从而存在两个以上不同版本的Array构造函数。如果你从一个框架向另一个框架传入一个数组，那么传入的数组与第二个框架中原生创建的数组就分别具有不用的构造函数。为了解决这个问题，ECMAScript5增加了Array.isArray()方法。这个方法的目的是最终确定某个值到底是不是数组，而不管它是在那个全局执行环境中创建的。2.转换方法 所有对象都具有toLocaleString(),toString(),valueOf()方法。其中，调用数组的toString()方法会返回数组中每个值的字符串形式拼接而成的一个以逗号分隔的字符串。而调用valueOf()返回的还是数组。 另外，toLocaleString()方法也经常返回与toString()和valueOf()方法相同的值，但也不总如此。当调用数组的toLocaleString()时，它也会创建一个数组值的以逗号分隔的字符串，而与前两者唯一不同之处在于，这里调用的是每一项的toLocaleString()方法，而不是toString()方法。如下例子：1234567891011121314151617181920var person1 = &#123; toLocaleString:function()&#123; return &apos;Locale&apos;; &#125;, toString: function()&#123; return &apos;string&apos;; &#125;&#125;;var person2 = &#123; toLocaleString: function()&#123; return &apos;Locale2&apos;; &#125;, toString: function()&#123; return &apos;string2&apos; &#125;&#125;;var people = [person1, person2];alert(people); //string,string2alert(people.toString()) //string,string2alert(people.toLocaleString()) //Locale,Locale2 上面通过重写两个对象的toString()和toLocaleString()方法， 可以看出调用不同的方法，返回值不同。 数组继承的toLocaleString(),toString(),valueOf()方法，在默认情况下都会以逗号分隔字符串形式返回数组想。而如果使用join()方法，则可以使用不同的分隔符来构建这个字符串。join方法只接受一个参数，即用做分隔符的字符串，然后返回包含所有数组项的字符串。如果不给join()传入任何值，或者传入undefined，则使用默认逗号分隔符。IE7及以前的版本会错误的使用undefined作为分隔符。如果数组中的某一项的值是null或者undefined，那么该值在join(),toLocaleString(),toString()和valueOf()方法返回的结果中以空字符串表示。3.数组的堆栈 栈是一种LIFO(last-in-first-out)后进先出的数据结构。栈中数据的操作只发生在一个位置—-栈的顶部。push()方法可以接受任意数量的参数，将其逐个添加到数组的末尾，并返回修改后数组的长度。pop()方法则从数组末尾移除最后一向，减少数组的length值，然后返回移除的项。 队列数据结构的规则是FIFO(first-in-first-out)先进先出。队列的数据项在末尾添加，在首部移除。push()从尾部添加，所以shift()则是从头部删除，返回被删除的项，数组长度减1。unshift()则是在数组头部添加任意项，并返回新数组的长度。IE7及以前的版本中，unshift()方法总是返回undefined而不是数组的新长度。IE8兼容模式下会返回正确的值4.排序方法 reverse()方法反转数组项的顺序。 默认情况下sort()方法是以升序的方式进行排序。sort()方法会调用每个数组项的toString()方法，然后比较得到字符串进行排序。这种默认排序方式存在很大的问题，所以sort()可以接受一个比较函数作为参数，以便我们指定哪个值位于哪个值的前面。 比较函数接收两个参数，如果第一个参数应该位于第二个之前则返回一个负数，如果两个参数相等则返回0，如果第一个参数应该位于第二个之后则返回正数。如下：123456789function compare(val1, val2)&#123; if(val1 &lt; val2)&#123; return -1; &#125;else if(val1 &gt; val2)&#123; return 1; &#125;else &#123; return 0; &#125;&#125; 这个比较函数可以适用大多数数据类型，只要将其作为参数传递给sort()方法即可。如下：123var values=[0,15,3,56,4];values.sort(compare);alert(value); //0,3,4,15,56 也可以通过比较函数产生降序的结果，只需要交换比较函数返回的值即可。reserve()和sort()方法的返回值是经过排序之后的数组。5.操作方法 concat()方法，可以将接受到的参数添加到这个副本的末尾，最后返回新构建的数组。该方法会先创建一个当前数组的一个副本。如果concat()没有参数，则返回一个当前数组的副本。 slice()方法，基于当前数组中的一或多个项创建一个新数组。接收一或两个参数，即要返回项的起始或结束位置。只有一个参数的情况下，则返回从起始到当前数组末尾的所有项。如果两个参数，则返回从起始开始到结束位置之间的项，但不包括结束位置的项。slice()不会影响原来数组。 splice()方法，主要用途是向数组中插入项： 删除：可以删除任意数量的项，只需指定2个参数：要删除的第一项的位置和要删除的项数，例如splice(0,2)会删除数组中的前两项；插入：可以向指定位置插入任意数量的项，提供3个参数：起始位置，0（要删除的项），要插入的项；替换：可以向指定位置插入任意数量的项，且同时删除任意数量的项，提供3个参数：起始位置，要删除的项数和要插入的任意数量的项。 splice()方法始终返回一个数组，该数组中包含从原始数组中删除的项（若没有删除任何项，则返回一个空数组）。 6.位置方法 indexOf()和lastIndexOf(),都接受两个参数：要查找的项和（可选）查找起点位置的索引。indexOf()从前往后查找，lastIndexOf()从后往前查找。7.迭代方法 ECMAScript5为数组定义了5个迭代方法。每个方法都接收两个参数：要在每一项上运行的函数和（可选）运行该函数的作用域对象—影响this的值。传入这些方法中的函数会接收三个参数：数组项的值，该项在数组中的位置和数组对象本身。 every(): 对数组中的每一项运行给定函数，如果该函数的每一项都返回true，则返回true;filter(): 对数组中的每一项运行给定函数，返回该函数会返回true的项组成的数组;forEach(): 对数组中的每一项运行给定的函数。这个方法没有返回值;map(): 对数组中的每一项运行给定函数，返回每次函数调用的结果组成的数组;some(): 对数组中的每一项运行给定函数，如果该函数对任一项返回true,则返回true。 以上方法都不会修改数组中的包含的值8.归并方法 reduce()和reduceRight()。都会迭代数组的所有项，然后构建一个最终返回的值。其中reduce()方法从数组的第一项开始，逐个遍历到最后。而reduceRight()则从数组的最后一项开始，遍历到第一项。 这两个方法都接收两个参数：一个在每一项上调用的函数和（可选）作为归并基础的初始值。传给reduce()和reduceRight()的函数接收4个参数：前一个值，当前值，项的索引和数组对象。*这个函数返回的任何值都会作为第一个参数自动传给下一项。第一次迭代发生在数组的第二项上，因此第一个参数是数组的第一项，第二个参数就是数组的第二项。如下，利用reduce()方法归并求和：12345var value = [1,2,3,4,5];var sum = value.reduce(function(pre, cur, index, array)&#123; return prev + cur;&#125;);alert(sum); //15 以上是JS数组拥有的基本信息，部分摘抄自《JavaScript高级程序设计3》，供以后复习。]]></content>
+      <categories>
+        <category>个人博客</category>
+      </categories>
+      <tags>
+        <tag>JavaScript</tag>
+      </tags>
+  </entry>
+</search>
